@@ -6,7 +6,7 @@ import { WhaleFinderProvider } from '../../blockchain/providers/whale-finder.pro
 export class WhaleFinderCron {
     constructor(private readonly whaleFinderProvider: WhaleFinderProvider) {}
 
-    @Cron(CronExpression.EVERY_MINUTE)
+    @Cron(CronExpression.EVERY_SECOND)
     public async execute() {
         await this.whaleFinderProvider.execute();
     }

@@ -5,7 +5,7 @@ import { AlarmProvider } from '../../alarms/providers/alarm.provider';
 @Injectable()
 export class WhaleFinderProvider {
     private readonly logger = new Logger('WhaleFindeProvider');
-    private readonly minValueEth = 100;
+    private readonly minValueEth: number = parseInt(process.env.WHALE_MIN_ETH);
     private readonly provider: ethers.providers.JsonRpcProvider;
 
     constructor(

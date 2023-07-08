@@ -7,10 +7,13 @@ export class AlarmProvider {
         switch(sound){
             case 1:
                 exec("mplayer src/assets/1.mp3");
+                break;
             case 2:
                 exec("mplayer src/assets/2.mp3");
+                break;
             default:
                 exec("mplayer src/assets/1.mp3");
+                break;
         }
     }
 }
