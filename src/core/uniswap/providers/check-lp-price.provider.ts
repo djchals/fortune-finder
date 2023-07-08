@@ -5,10 +5,6 @@ import { AlarmProvider } from '../../alarms/providers/alarm.provider';
 @Injectable()
 export class CheckLpPriceProvider {
     private readonly logger = new Logger('CheckLpPriceProvider');
-    private readonly subgraphURI: string = "https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-arbitrum-one";
-    private readonly poolAddress: string = "0xbb7e7b8c1e5d08286f45878a76667f016e2f8390";
-    private readonly lowerTick: number = -72800;
-    private readonly upperTick: number = -67800;  
     private client: any;
     private readonly queryPool = "query getTickUSD($poolAddress: String) {\
         pool(id: $poolAddress) {\
@@ -19,12 +15,12 @@ export class CheckLpPriceProvider {
     constructor(
         private readonly alarmProvider: AlarmProvider
     ) {
-        this.client = new GraphQLClient(this.subgraphURI);
+        this.client = new GraphQLClient(process.env.CHECK_LP_SUBGRAPH);
     }
 
     public async gettickUSD(): Promise<number> {
         const responsePool = await this.client.request(this.queryPool, {
-            poolAddress: this.poolAddress
+            poolAddress: process.env.CHECK_LP_POOLADDRESS
         })
         .then((data: any) => data)
         .catch((e: any) => {
@@ -34,19 +30,21 @@ export class CheckLpPriceProvider {
     } 
     
     public async execute(): Promise<void> {
+        const tickUpper: number = parseInt(process.env.CHECK_LP_TICK_UPPER);
+        const tickLower: number = parseInt(process.env.CHECK_LP_TICK_LOWER);
         const tickUSD: number = (await this.gettickUSD().catch(e => console.log(e))) || 0;
         const dateTime: string = new Date().toLocaleString('es-ES');
     
         if(tickUSD === 0) {
             this.logger.error(dateTime + " Cannot connect to thegraph.com");
-        }else if(tickUSD < this.lowerTick) {
-            this.logger.warn(dateTime + " MAX LIMIT OVERPASSED " + this.lowerTick + "! Actual Tick: " + tickUSD);
+        }else if(tickUSD < tickLower) {
+            this.logger.warn(dateTime + " MAX LIMIT OVERPASSED " + tickLower + "! Actual Tick: " + tickUSD);
             this.alarmProvider.emit(1);
-        }else if(tickUSD > this.upperTick) {
-            this.logger.warn(dateTime + " MIN LIMIT OVERPASSED " + this.upperTick + "! Actual Tick: " + tickUSD);
+        }else if(tickUSD > tickUpper) {
+            this.logger.warn(dateTime + " MIN LIMIT OVERPASSED " + tickUpper + "! Actual Tick: " + tickUSD);
             this.alarmProvider.emit(1);
         }else{
-            this.logger.debug(dateTime + " Actual Tick: " + tickUSD + " / Allower range: " + this.lowerTick + " | " + this.upperTick);
+            this.logger.debug(dateTime + " Actual Tick: " + tickUSD + " / Allower range: " + tickLower + " | " + tickUpper);
         }
     }
 }

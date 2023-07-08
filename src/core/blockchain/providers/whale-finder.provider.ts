@@ -11,7 +11,7 @@ export class WhaleFinderProvider {
     constructor(
         private readonly alarmProvider: AlarmProvider
     ) {
-        this.provider = new ethers.providers.JsonRpcProvider("https://arb1.arbitrum.io/rpc");
+        this.provider = new ethers.providers.JsonRpcProvider(process.env.WHALE_FINDER_RPC);
     }
     
     private getDate(): string {

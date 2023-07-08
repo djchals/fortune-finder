@@ -24,12 +24,9 @@ export class JobsModule {
     ) {}
 
     public async firstTimeInit(): Promise<void> {
-        this.logger.debug('Starting one time init jobs and fist time crons...');
+        this.logger.debug('Starting one time init jobs...');
     
         // INIT SCRIPTS
-        // Include one time init scripts here
-    
-        // CRONS
         await this.checkLpPriceCron.execute();
         await this.whaleFinderCron.execute();
       }
