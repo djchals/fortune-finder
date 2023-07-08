@@ -38,15 +38,15 @@ export class CheckLpPriceProvider {
         const dateTime: string = new Date().toLocaleString('es-ES');
     
         if(tickUSD === 0) {
-            this.logger.error(dateTime + " No se pudo conectar a thegraph.com");
+            this.logger.error(dateTime + " Cannot connect to thegraph.com");
         }else if(tickUSD < this.lowerTick) {
-            this.logger.warn(dateTime + " LÍMITE MÍNIMO " + this.lowerTick + " SUPERADO! Tick actual: " + tickUSD);
+            this.logger.warn(dateTime + " MAX LIMIT OVERPASSED " + this.lowerTick + "! Actual Tick: " + tickUSD);
             this.alarmProvider.emit(1);
         }else if(tickUSD > this.upperTick) {
-            this.logger.warn(dateTime + " LÍMITE MÁXIMO " + this.upperTick + " SUPERADO! Tick actual: " + tickUSD);
+            this.logger.warn(dateTime + " MIN LIMIT OVERPASSED " + this.upperTick + "! Actual Tick: " + tickUSD);
             this.alarmProvider.emit(1);
         }else{
-            this.logger.debug(dateTime + " Tick actual: " + tickUSD + " / Rango permitido: " + this.lowerTick + " | " + this.upperTick);
+            this.logger.debug(dateTime + " Actual Tick: " + tickUSD + " / Allower range: " + this.lowerTick + " | " + this.upperTick);
         }
     }
 }
